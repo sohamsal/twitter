@@ -2,18 +2,34 @@
 import { createClient } from "@/utils/supabase/client";
 import { Engagement } from "@/interfaces/interfaces";
 import { useEffect, useState } from "react";
-import { data } from "autoprefixer";
+import { User } from "@/interfaces/interfaces"
 
 export default function LikesReplies(params: { tweetId: number }) {
     const supabase = createClient();
     const table = 'tweets';
+    const likesTable = 'liked_posts';
     const [tweetData, setTweetData] = useState<Engagement[]>([]);
+    const [currentUser, setUser] = useState<User | null>(null);
 
     useEffect(() => {
+        fetchUser();
         fetchData()
     }, []);
 
-
+    const fetchUser = async () => {
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+            const emailParts = user.email ? user.email.split('@') : [];
+            setUser({
+                img: user.user_metadata.picture,
+                link: '',
+                name: user.user_metadata.full_name,
+                username: emailParts[0],
+            });
+        }
+    };
     async function fetchData() {
         const { data, error } = await supabase.from(table)
             .select('tweet_id, likes, replies')
@@ -27,14 +43,30 @@ export default function LikesReplies(params: { tweetId: number }) {
     }
 
     async function updateLikes(tweetId: number) {
-        const { data, error } = await supabase.rpc('add_likes', { id: tweetId });
-        if (error) {
-            console.error('Error updating likes:', error);
-        } else {
-            // Update the state with the new like count
-            fetchData();
+        const checkData = await supabase.from(likesTable).select('post_id, username')
+            .eq('post_id', tweetId).eq('username', currentUser?.username);
+        if (checkData.data && checkData.data.length > 0) {
+            const { error } = await supabase.rpc('remove_likes', { id: tweetId });
+            await supabase.from(likesTable).delete().eq('post_id', tweetId).eq('username', currentUser?.username);
+            if (error) {
+                console.error('Error updating likes:', error);
+            } else {
+                fetchData();
+            }
+        }
+        else {
+            const data = await supabase.from(likesTable).insert([{ post_id: tweetId, username: currentUser?.username }]);
+            console.log(data)
+
+            const { error } = await supabase.rpc('add_likes', { id: tweetId });
+            if (error) {
+                console.error('Error updating likes:', error);
+            } else {
+                fetchData();
+            }
         }
     }
+
 
     return (
         <div className="flex flex-row my-1">

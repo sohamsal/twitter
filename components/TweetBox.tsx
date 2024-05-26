@@ -15,10 +15,12 @@ const TweetBox: React.FC = () => {
                 data: { user },
             } = await supabase.auth.getUser();
             if (user) {
+                const emailParts = user.email ? user.email.split('@') : [];
                 setUser({
                     img: user.user_metadata.picture,
                     link: '',
                     name: user.user_metadata.full_name,
+                    username: emailParts[0],
                 });
             }
         };
@@ -27,7 +29,7 @@ const TweetBox: React.FC = () => {
     }, []);
 
     const handleTweet = async () => {
-        if (user) {
+        if (user && tweet.length > 0) {
             const { data, error } = await supabase.from(table).insert([
                 {
                     who_posted: {
@@ -35,6 +37,7 @@ const TweetBox: React.FC = () => {
                             img: user.img,
                             link: user.link,
                             name: user.name,
+                            username: user.username,
                         },
                     },
                     tweet_content: tweet,

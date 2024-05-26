@@ -2,6 +2,7 @@ export interface User {
     img: string;
     link: string;
     name: string;
+    username: string;
 }
 
 export interface Tweet {
