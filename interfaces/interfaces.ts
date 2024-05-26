@@ -13,3 +13,9 @@ export interface Tweet {
     likes: number;
     replies: number;
 }
+
+export interface Engagement {
+    tweet_id: number;
+    likes: number;
+    replies: number;
+}

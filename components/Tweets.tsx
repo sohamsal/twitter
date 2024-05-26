@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/client";
 import { tweetId } from "@/components/actions/action";
 import { useEffect, useState } from "react";
 import { Tweet } from "@/interfaces/interfaces"
+import Engagement from "./Engagement";
 
 
 export default function Tweets() {
@@ -70,11 +71,12 @@ export default function Tweets() {
             {tweetData.length > 0 ? (
                 <div className="flex-col justify-center dark:[color-scheme:dark]">
                     {tweetData.map(tweet => (
-                        <div className="p-4 w-96 bg-slate-900 mb-6 cursor-pointer" key={tweet.tweet_id} onClick={() => tweetId(tweet.tweet_id)}>
+                        <div className="p-4 w-96 bg-slate-900 mb-6 cursor-default" key={tweet.tweet_id} >
                             <img src={tweet.who_posted.user.img} alt="User Profile" className="rounded-full h-8 w-8" />
                             <p className="font-bold mt-1">{tweet.who_posted.user.name}</p>
-                            <p>{tweet.tweet_content}</p>
-                            <p className="text-gray-500 text-sm">{readableDate(tweet)}</p>
+                            <p className="cursor-pointer" onClick={() => tweetId(tweet.tweet_id)}>{tweet.tweet_content}</p>
+                            <p onClick={() => tweetId(tweet.tweet_id)} className="text-gray-500 text-sm cursor-pointer">{readableDate(tweet)}</p>
+                            <Engagement tweetId={tweet.tweet_id} />
                         </div>
                     ))}
                 </div>
