@@ -1,12 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
-
-interface User {
-    img: string;
-    link: string;
-    name: string;
-}
+import { User } from "@/interfaces/interfaces"
 
 const TweetBox: React.FC = () => {
     const supabase = createClient();
@@ -55,7 +50,7 @@ const TweetBox: React.FC = () => {
         } else {
             console.error('User not found');
         }
-        
+
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -66,13 +61,13 @@ const TweetBox: React.FC = () => {
         <div className='flex flex-col'>
             <h2 className='text-lg font-semibold pb-2'>Write what's on your mind</h2>
             <textarea
-                className="bg-black w-96 h-36 border-white border-2 placeholder-neutral-500 align-text-top p-2"
+                className="bg-gray-900 w-96 h-24 rounded-md border-white border-2 placeholder-neutral-500 align-text-top p-2"
                 placeholder='Type your tweet here'
                 value={tweet}
                 onChange={handleChange}
             />
             <button
-                className="bg-blue-500 text-white px-4 p-2 rounded-md mt-2 hover:bg-blue-800"
+                className="bg-purple-500 text-white px-4 p-2 rounded-md mt-2 hover:bg-purple-800"
                 onClick={handleTweet}
             >
                 Tweet
