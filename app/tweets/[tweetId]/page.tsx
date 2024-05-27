@@ -69,7 +69,7 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
         <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
             
             {tweetData.length > 0 && tweetData[0].tweet_content.length > 0 ? (
-                <div className="flex-col w-1/3 justify-center pt-24 mb-10 text-4xl">
+                <div className="flex-col w-4/5 lg:w-1/2 justify-center pt-24 mb-10 text-4xl">
                     <div className="px-1.5 mx-2 mb-5"><Home/></div>
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
                     <div className="flex flex-row justify-between"> 

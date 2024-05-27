@@ -48,7 +48,7 @@ const TweetBox: React.FC = () => {
                 console.error('Error inserting tweet:', error);
             } else {
                 console.log('Tweeted:', data);
-                setTweet(''); 
+                setTweet('');
             }
         } else {
             console.error('User not found');
@@ -61,10 +61,10 @@ const TweetBox: React.FC = () => {
     };
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col mx-4 sm:mx-8 md:mx-16 lg:mx-24'>
             <h2 className='text-lg font-semibold pb-2'>Write what's on your mind</h2>
             <textarea
-                className="bg-gray-900 w-96 h-24 rounded-md border-white border-2 placeholder-neutral-500 align-text-top p-2"
+                className="bg-gray-900 w-full sm:w-96 h-24 rounded-md border-white border-2 placeholder-neutral-500 align-text-top p-2"
                 placeholder='Type your tweet here'
                 value={tweet}
                 onChange={handleChange}

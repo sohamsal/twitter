@@ -15,25 +15,23 @@ export default async function ProtectedPage() {
     return redirect("/login");
   }
 
-  
+
 
   return (
-    <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
+    <div className="flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
       <div className="w-full">
-        {/* <div className="py-2 font-bold bg-purple-950 text-center">
-          This is a protected page that you can only see as an authenticated
-          user
-        </div> */}
         <nav className="w-full flex justify-center bg-black border-b border-b-foreground/10 h-16">
           <div className="flex justify-between items-center p-3 text-sm">
             <AuthButton />
           </div>
         </nav>
       </div>
-      <div className="my-10"><TweetBox /></div>
-      <div className="animate-in flex-1 flex flex-col gap-20 max-w-4xl px-3 dark:[color-scheme:dark]">
-        <Tweets/>
+      <div className="my-10 mx-4 sm:mx-8 md:mx-16 lg:mx-24"><TweetBox /></div>
+      <div className="animate-in flex-1 flex flex-col px-3 sm:px-6 md:px-12 lg:px-16 dark:[color-scheme:dark]">
+        <Tweets />
       </div>
     </div>
+
+
   );
 }

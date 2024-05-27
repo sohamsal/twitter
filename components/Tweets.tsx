@@ -23,7 +23,7 @@ export default function Tweets() {
 
     async function fetchData() {
         const { data, error } = await supabase.from(table).select('tweet_id, created_at, who_posted, tweet_content, parent');
-            
+
         if (error) {
             console.error('Error fetching data:', error);
         } else {
@@ -52,7 +52,7 @@ export default function Tweets() {
             {tweetData.length > 0 ? (
                 <div className="flex-col justify-center dark:[color-scheme:dark]">
                     {tweetData.map(tweet => (
-                        <div className="p-4 w-96 bg-slate-900 mb-6 cursor-default" key={tweet.tweet_id} >
+                        <div className="p-4 w-11/12 sm:w-96 bg-slate-900 mb-6 cursor-default mx-4 sm:mx-8 md:mx-16 lg:mx-24" key={tweet.tweet_id} >
                             <img src={tweet.who_posted.user.img} alt="User Profile" className="rounded-full h-8 w-8" />
                             <p className="font-bold mt-1">{tweet.who_posted.user.name}</p>
                             {tweet.parent && <p onClick={() => tweetId(tweet.parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {tweet.who_posted.user.name + "'s post"}</p>}
@@ -66,5 +66,6 @@ export default function Tweets() {
                 <p>Loading...</p>
             )}
         </div>
+
     );
 }

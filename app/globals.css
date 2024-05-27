@@ -73,3 +73,6 @@
       @apply bg-background text-foreground;
     }
   } 
+  .bg-background {
+    background-color: #000;
+  }
