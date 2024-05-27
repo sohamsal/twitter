@@ -14,7 +14,7 @@ export default function Login({ }) {
 
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
-      <h1 className="text-white">sorry about the oauth, i think its annoying too</h1>
+      <h1 className="text-white">sorry about the oauth lol</h1>
       <button
         onClick={googleLogin}
         className="bg-purple-500 text-white hover:bg-purple-800 rounded-md px-4 py-2 text-foreground mb-2"
