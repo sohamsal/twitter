@@ -9,7 +9,6 @@ export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "twitter!",
   description: "",
-  icons: [{ rel: "icon", href: "/favicon.ico" }],
 };
 
 export default function RootLayout({
