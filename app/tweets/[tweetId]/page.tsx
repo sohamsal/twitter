@@ -67,11 +67,11 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
     return (
         <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
             {tweetData.length > 0 && tweetData[0].tweet_content.length > 0 ? (
-                <div className="flex-col justify-center pt-24 mb-10 text-4xl">
+                <div className="flex-col w-1/3 justify-center pt-24 mb-10 text-4xl">
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
-                    <div className="flex flex-row">
+                    <div className="flex flex-row justify-between"> 
                         <h2 className="font-bold mt-1">{tweetData[0].who_posted.user.name}</h2>
-                        <button className="text-sm bg-purple-600 ml-10 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
+                        <button className="text-sm bg-purple-600 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
                     </div>
                     <p className="text-2xl font-light">{tweetData[0].tweet_content}</p>
                     <p className="text-gray-500 text-sm">{readableDate(tweetData[0])}</p>
