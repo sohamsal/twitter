@@ -3,22 +3,9 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import Replies from "@/components/Replies"; // Add this line
 import { Tweet } from "@/interfaces/interfaces"
-
-// interface User {
-//     img: string;
-//     link: string;
-//     name: string;
-// }
-
-// interface Tweet {
-//     tweet_id: number;
-//     created_at: string;
-//     who_posted: { user: User };
-//     tweet_content: string;
-//     parent: number;
-//     likes: number;
-//     replies: number;
-// }
+import Engagement from "@/components/Engagement";
+import ReplyBox from "@/components/ReplyBox";
+import AuthButton from "@/components/AuthButton";
 
 export default function TweetsPage({ params }: { params: { tweetId: string } }) {
     const supabase = createClient();
@@ -64,6 +51,7 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
         if (username && (who_posted.user.img == username.user_metadata.avatar_url)) {
             console.log(username)
             const { error } = await supabase.from('tweets').delete().eq('tweet_id', tweet_id);
+            await supabase.from('liked_posts').delete().eq('post_id', tweet_id);
 
             if (error) {
                 console.error('Error deleting tweet:', error);
@@ -83,11 +71,13 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
                     <div className="flex flex-row">
                         <h2 className="font-bold mt-1">{tweetData[0].who_posted.user.name}</h2>
-                        <button className="text-sm bg-fuchsia-900 mx-10 p-3 rounded-md hover:bg-fuchsia-950" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
+                        <button className="text-sm bg-purple-600 ml-10 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
                     </div>
                     <p className="text-2xl font-light">{tweetData[0].tweet_content}</p>
                     <p className="text-gray-500 text-sm">{readableDate(tweetData[0])}</p>
+                    <Engagement tweetId={tweetData[0].tweet_id} />
                     <h1 className="font-semibold text-4xl pt-5 text-purple-600">Replies</h1>
+                    <ReplyBox tweet = {tweetData[0]}/>
                     <Replies tweet={tweetData[0]} />
                 </div>
             ) : (

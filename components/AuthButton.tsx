@@ -10,8 +10,7 @@ export default async function AuthButton() {
   } = await supabase.auth.getUser();
 
   const signOut = async () => {
-    "use server";
-
+    "use server"
     const supabase = createClient();
     await supabase.auth.signOut();
     return redirect("/login");
@@ -26,6 +25,7 @@ export default async function AuthButton() {
           Logout
         </button>
       </form>
+
     </div>
   ) : (
     <Link

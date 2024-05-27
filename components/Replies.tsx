@@ -71,7 +71,7 @@ export default function Replies({ tweet }: { tweet: Tweet }) {
                     ))}
                 </div>
             ) : (
-                <p className="text-sm text-gray-400 pt-2">no replies yet!</p>
+                <p className="text-sm text-gray-400 pt-2 flex justify-center">no replies yet!</p>
             )}
         </>
     )
