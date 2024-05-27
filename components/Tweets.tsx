@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Tweet } from "@/interfaces/interfaces"
 import Engagement from "./Engagement";
 
-
 export default function Tweets() {
     const supabase = createClient();
     const table = 'tweets';
@@ -23,8 +22,8 @@ export default function Tweets() {
     }, []);
 
     async function fetchData() {
-        const { data, error } = await supabase.from(table).select('tweet_id, created_at, who_posted, tweet_content');
-
+        const { data, error } = await supabase.from(table).select('tweet_id, created_at, who_posted, tweet_content, parent');
+            
         if (error) {
             console.error('Error fetching data:', error);
         } else {
@@ -48,24 +47,6 @@ export default function Tweets() {
         return (formatDate(tweet.created_at));
     };
 
-    // const deleteTweet = async (tweet_id: number, who_posted: any) => {
-    //     const username = await fetchUser()
-    //     if (username && (who_posted.user.img == username.user_metadata.avatar_url)) {
-    //         console.log(username)
-    //         const { error } = await supabase.from(table).delete().eq('tweet_id', tweet_id);
-
-    //         if (error) {
-    //             console.error('Error deleting tweet:', error);
-    //         } else {
-    //             console.log('Deleted tweet:', tweet_id);
-    //             fetchData();
-    //         }
-    //     } else {
-    //         alert("bros tryna delete someone else's tweet")
-    //     }
-    // };
-    
-
     return (
         <div>
             {tweetData.length > 0 ? (
@@ -74,6 +55,7 @@ export default function Tweets() {
                         <div className="p-4 w-96 bg-slate-900 mb-6 cursor-default" key={tweet.tweet_id} >
                             <img src={tweet.who_posted.user.img} alt="User Profile" className="rounded-full h-8 w-8" />
                             <p className="font-bold mt-1">{tweet.who_posted.user.name}</p>
+                            {tweet.parent && <p onClick={() => tweetId(tweet.parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {tweet.who_posted.user.name + "'s post"}</p>}
                             <p className="cursor-pointer" onClick={() => tweetId(tweet.tweet_id)}>{tweet.tweet_content}</p>
                             <p onClick={() => tweetId(tweet.tweet_id)} className="text-gray-500 text-sm cursor-pointer">{readableDate(tweet)}</p>
                             <Engagement tweetId={tweet.tweet_id} />

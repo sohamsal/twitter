@@ -5,7 +5,8 @@ import Replies from "@/components/Replies"; // Add this line
 import { Tweet } from "@/interfaces/interfaces"
 import Engagement from "@/components/Engagement";
 import ReplyBox from "@/components/ReplyBox";
-import AuthButton from "@/components/AuthButton";
+import { homeRedirect, tweetId } from "@/components/actions/action";
+import { Home } from "@/components/Home";
 
 export default function TweetsPage({ params }: { params: { tweetId: string } }) {
     const supabase = createClient();
@@ -30,7 +31,7 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
     };
 
     async function fetchData() {
-        const { data, error } = await supabase.from('tweets').select('tweet_id, created_at, who_posted, tweet_content').filter('tweet_id', 'eq', params.tweetId);
+        const { data, error } = await supabase.from('tweets').select('tweet_id, created_at, who_posted, tweet_content, parent').filter('tweet_id', 'eq', params.tweetId);
 
         if (error) {
             console.error('Error fetching data:', error);
@@ -66,13 +67,16 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
 
     return (
         <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
+            
             {tweetData.length > 0 && tweetData[0].tweet_content.length > 0 ? (
                 <div className="flex-col w-1/3 justify-center pt-24 mb-10 text-4xl">
+                    <div className="px-1.5 mx-2 mb-5"><Home/></div>
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
                     <div className="flex flex-row justify-between"> 
                         <h2 className="font-bold mt-1">{tweetData[0].who_posted.user.name}</h2>
                         <button className="text-sm bg-purple-600 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
                     </div>
+                    {tweetData[0].parent && <p onClick={() => tweetId(tweetData[0].parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {tweetData[0].who_posted.user.name + "'s post"}</p>}
                     <p className="text-2xl font-light">{tweetData[0].tweet_content}</p>
                     <p className="text-gray-500 text-sm">{readableDate(tweetData[0])}</p>
                     <Engagement tweetId={tweetData[0].tweet_id} />
