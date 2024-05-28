@@ -47,6 +47,15 @@ export default function Tweets() {
         return (formatDate(tweet.created_at));
     };
 
+    const getUsernameOfParentTweet = async (tweet: Tweet) => {
+        const { data } = await supabase.from(table).select('tweet_id, who_posted').eq('tweet_id', tweet.parent);
+        if (data && data.length > 0) {
+            return data[0].who_posted?.user.name;
+        }
+        return '';
+    }
+
+
     return (
         <div>
             {tweetData.length > 0 ? (
@@ -55,7 +64,7 @@ export default function Tweets() {
                         <div className="p-4 w-11/12 sm:w-96 bg-slate-900 mb-6 cursor-default mx-4 sm:mx-8 md:mx-16 lg:mx-24" key={tweet.tweet_id} >
                             <img src={tweet.who_posted.user.img} alt="User Profile" className="rounded-full h-8 w-8" />
                             <p className="font-bold mt-1">{tweet.who_posted.user.name}</p>
-                            {tweet.parent && <p onClick={() => tweetId(tweet.parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {tweet.who_posted.user.name + "'s post"}</p>}
+                            {tweet.parent && <p onClick={() => tweetId(tweet.parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {getUsernameOfParentTweet(tweet) + "'s post"}</p>}
                             <p className="cursor-pointer" onClick={() => tweetId(tweet.tweet_id)}>{tweet.tweet_content}</p>
                             <p onClick={() => tweetId(tweet.tweet_id)} className="text-gray-500 text-sm cursor-pointer">{readableDate(tweet)}</p>
                             <Engagement tweetId={tweet.tweet_id} />
