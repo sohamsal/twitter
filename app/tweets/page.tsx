@@ -11,10 +11,9 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return redirect("/login");
-  }
-
+  // if (!user) {
+  //   return redirect("/login");
+  // }
 
 
   return (
@@ -26,12 +25,14 @@ export default async function ProtectedPage() {
           </div>
         </nav>
       </div>
-      <div className="my-10 mx-4 sm:mx-8 md:mx-16 lg:mx-24"><TweetBox /></div>
+      {user && (
+        <div className="my-10 mx-4 sm:mx-8 md:mx-16 lg:mx-24">
+          <TweetBox />
+        </div>
+      )}
       <div className="animate-in flex-1 flex flex-col px-3 sm:px-6 md:px-12 lg:px-16 dark:[color-scheme:dark]">
         <Tweets />
       </div>
     </div>
-
-
   );
 }

@@ -33,5 +33,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`/login`)
+  return NextResponse.redirect(`/tweets`)
 }

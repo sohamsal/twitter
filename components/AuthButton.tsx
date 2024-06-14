@@ -13,8 +13,9 @@ export default async function AuthButton() {
     "use server"
     const supabase = createClient();
     await supabase.auth.signOut();
-    return redirect("/login");
+    return redirect("/tweets");
   };
+
 
   return user ? (
     <div className="flex items-center">
@@ -30,9 +31,8 @@ export default async function AuthButton() {
   ) : (
     <Link
       href="/login"
-      className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-    >
-      Login
+      className="py-2 px-3 flex rounded-md no-underline bg-purple-600 bg-btn-background hover:bg-btn-background-hover hover:bg-purple-800"    >
+      Login/Sign Up to Tweet
     </Link>
   );
 }

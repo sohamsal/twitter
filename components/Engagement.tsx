@@ -63,28 +63,33 @@ export default function LikesReplies(params: { tweetId: number }) {
     };
 
     const updateLikes = async (tweetId: number) => {
-        if (liked) {
-            const { error } = await supabase.rpc('remove_likes', { id: tweetId });
-            if (error) {
-                console.error('Error removing like:', error);
+        if (currentUser) {
+            if (liked) {
+                const { error } = await supabase.rpc('remove_likes', { id: tweetId });
+                if (error) {
+                    console.error('Error removing like:', error);
+                } else {
+                    await supabase.from(likesTable).delete().eq('post_id', tweetId).eq('username', currentUser?.username);
+                    setLiked(false);
+                    fetchData();
+                }
             } else {
-                await supabase.from(likesTable).delete().eq('post_id', tweetId).eq('username', currentUser?.username);
-                setLiked(false);
-                fetchData();
+                const { error } = await supabase.rpc('add_likes', { id: tweetId });
+                if (error) {
+                    console.error('Error adding like:', error);
+                } else {
+                    await supabase.from(likesTable).insert([{ post_id: tweetId, username: currentUser?.username }]);
+                    setLiked(true);
+                    fetchData();
+                }
             }
-        } else {
-            const { error } = await supabase.rpc('add_likes', { id: tweetId });
-            if (error) {
-                console.error('Error adding like:', error);
-            } else {
-                await supabase.from(likesTable).insert([{ post_id: tweetId, username: currentUser?.username }]);
-                setLiked(true);
-                fetchData();
-            }
+        }
+        else {
+            alert("You need to be logged in to like a tweet")
         }
     };
 
-    
+
 
     return (
         <div className="flex flex-row my-1">

@@ -5,7 +5,7 @@ import Replies from "@/components/Replies"; // Add this line
 import { Tweet } from "@/interfaces/interfaces"
 import Engagement from "@/components/Engagement";
 import ReplyBox from "@/components/ReplyBox";
-import { homeRedirect, tweetId } from "@/components/actions/action";
+import { tweetId } from "@/components/actions/action";
 import { Home } from "@/components/Home";
 
 export default function TweetsPage({ params }: { params: { tweetId: string } }) {
@@ -49,39 +49,42 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
 
     const deleteTweet = async (tweet_id: number, who_posted: any) => {
         const username = await fetchUser()
-        if (username && (who_posted.user.img == username.user_metadata.avatar_url)) {
-            console.log(username)
-            const { error } = await supabase.from('tweets').delete().eq('tweet_id', tweet_id);
-            await supabase.from('liked_posts').delete().eq('post_id', tweet_id);
+        if (username) {
+            if (username && (who_posted.user.img == username.user_metadata.avatar_url)) {
+                console.log(username)
+                const { error } = await supabase.from('tweets').delete().eq('tweet_id', tweet_id);
+                await supabase.from('liked_posts').delete().eq('post_id', tweet_id);
 
-            if (error) {
-                console.error('Error deleting tweet:', error);
+                if (error) {
+                    console.error('Error deleting tweet:', error);
+                } else {
+                    console.log('Deleted tweet:', tweet_id);
+                    fetchData();
+                }
             } else {
-                console.log('Deleted tweet:', tweet_id);
-                fetchData();
+                alert("bros tryna delete someone else's tweet")
             }
-        } else {
-            alert("bros tryna delete someone else's tweet")
         }
+
     };
 
     return (
         <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
-            
             {tweetData.length > 0 && tweetData[0].tweet_content.length > 0 ? (
                 <div className="flex-col w-4/5 lg:w-1/2 justify-center pt-24 mb-10 text-4xl">
-                    <div className="px-1.5 mx-2 mb-5"><Home/></div>
+                    
+                    <div className="px-1.5 mx-2 mb-5"><Home /></div>
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
-                    <div className="flex flex-row justify-between"> 
+                    <div className="flex flex-row justify-between">
                         <h2 className="font-bold mt-1">{tweetData[0].who_posted.user.name}</h2>
-                        <button className="text-sm bg-purple-600 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button> 
+                        <button className="text-sm bg-purple-600 p-3 rounded-md hover:bg-purple-800" onClick={() => deleteTweet(tweetData[0].tweet_id, tweetData[0].who_posted)}>Delete</button>
                     </div>
                     {tweetData[0].parent && <p onClick={() => tweetId(tweetData[0].parent)} className="text-gray-500 text-sm underline cursor-pointer">replied to {tweetData[0].who_posted.user.name + "'s post"}</p>}
                     <p className="text-2xl font-light">{tweetData[0].tweet_content}</p>
                     <p className="text-gray-500 text-sm">{readableDate(tweetData[0])}</p>
                     <Engagement tweetId={tweetData[0].tweet_id} />
                     <h1 className="font-semibold text-4xl pt-5 text-purple-600">Replies</h1>
-                    <ReplyBox tweet = {tweetData[0]}/>
+                    {fetchUser() === null && <ReplyBox tweet={tweetData[0]} />}
                     <Replies tweet={tweetData[0]} />
                 </div>
             ) : (
