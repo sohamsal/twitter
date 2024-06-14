@@ -53,11 +53,16 @@ export default function LikesReplies(params: { tweetId: number }) {
     };
 
     const checkIfLiked = async () => {
-        const { data } = await supabase.from(likesTable).select('post_id, username')
-            .eq('post_id', params.tweetId).eq('username', currentUser?.username);
-        if (data && data.length > 0) {
-            setLiked(true);
-        } else {
+        if (currentUser) {
+            const { data } = await supabase.from(likesTable).select('post_id, username')
+                .eq('post_id', params.tweetId).eq('username', currentUser?.username);
+            if (data && data.length > 0) {
+                setLiked(true);
+            } else {
+                setLiked(false);
+            }
+        }
+        else {
             setLiked(false);
         }
     };

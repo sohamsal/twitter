@@ -11,8 +11,11 @@ import { Home } from "@/components/Home";
 export default function TweetsPage({ params }: { params: { tweetId: string } }) {
     const supabase = createClient();
     const [tweetData, setTweetData] = useState<Tweet[]>([]);
+    const [loggedIn, setLoggedIn] = useState(false);
 
-    useEffect(() => { fetchData() }, []);
+    useEffect(() => {
+        fetchData()    
+    }, []);
 
     const formatDate = (timestamp: string) => {
         const date = new Date(timestamp);
@@ -32,7 +35,13 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
 
     async function fetchData() {
         const { data, error } = await supabase.from('tweets').select('tweet_id, created_at, who_posted, tweet_content, parent').filter('tweet_id', 'eq', params.tweetId);
-
+        const user = await fetchUser();
+        if (user) {
+            setLoggedIn(true);
+        }
+        else {
+            setLoggedIn(false);
+        }
         if (error) {
             console.error('Error fetching data:', error);
         } else {
@@ -72,7 +81,7 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
         <div className="flex-1 w-full flex flex-col items-center bg-black text-white dark:[color-scheme:dark]">
             {tweetData.length > 0 && tweetData[0].tweet_content.length > 0 ? (
                 <div className="flex-col w-4/5 lg:w-1/2 justify-center pt-24 mb-10 text-4xl">
-                    
+
                     <div className="px-1.5 mx-2 mb-5"><Home /></div>
                     <img src={tweetData[0].who_posted.user.img} alt="User Profile" className="rounded-full h-16 w-16 mb-2" />
                     <div className="flex flex-row justify-between">
@@ -84,7 +93,7 @@ export default function TweetsPage({ params }: { params: { tweetId: string } }) 
                     <p className="text-gray-500 text-sm">{readableDate(tweetData[0])}</p>
                     <Engagement tweetId={tweetData[0].tweet_id} />
                     <h1 className="font-semibold text-4xl pt-5 text-purple-600">Replies</h1>
-                    {fetchUser() === null && <ReplyBox tweet={tweetData[0]} />}
+                    {loggedIn && <ReplyBox tweet={tweetData[0]} />}
                     <Replies tweet={tweetData[0]} />
                 </div>
             ) : (
